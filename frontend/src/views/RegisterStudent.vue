@@ -2,6 +2,8 @@
 import api from "../data/api";
 import Button from "@/components/Button";
 import BaseView from "@/components/Base";
+import {configHeaders} from "@/data/config-headers";
+import {getValue} from "@/data/local-storage";
 
 export default {
   name: "RegisterStudent",
@@ -57,7 +59,7 @@ export default {
     },
     async saveStudent(formData) {
       try {
-        const response = await api.post("/students", formData);
+        const response = await api.post("/students", formData, configHeaders(getValue("token")));
         this.callSnackBar(response.data.message);
         this.resetForm();
       } catch (error) {

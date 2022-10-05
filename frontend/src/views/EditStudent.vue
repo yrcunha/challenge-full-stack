@@ -2,10 +2,12 @@
 import api from "../data/api";
 import ButtonBase from "@/components/Button";
 import BaseView from "@/components/Base";
+import {configHeaders} from "@/data/config-headers";
+import {getValue} from "@/data/local-storage";
 
 export default {
   name: "EditStudent",
-  components: {  ButtonBase, BaseView },
+  components: { ButtonBase, BaseView },
   data: () => ({
     buttons: ["Cancelar", "Salvar"],
     fields: ["name", "email", "ra", "cpf"],
@@ -55,7 +57,11 @@ export default {
     async saveStudent(formData) {
       const id = this.$route.params.id;
       try {
-        const response = await api.put(`/students/${id}`, formData);
+        const response = await api.put(
+          `/students/${id}`,
+          formData,
+          configHeaders(getValue("token"))
+        );
         this.callSnackBar(response.data.message);
       } catch (error) {
         this.callSnackBar(error.response.data.message, "error");
@@ -74,7 +80,7 @@ export default {
     async getStudent() {
       const id = this.$route.params.id;
       try {
-        const result = await api.get(`/students/${id}`);
+        const result = await api.get(`/students/${id}`, configHeaders(getValue("token")));
         this.model.name = result.data.name;
         this.model.email = result.data.email;
         this.model.ra = result.data.ra;
